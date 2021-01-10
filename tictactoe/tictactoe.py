@@ -45,14 +45,13 @@ def actions(board):
         for j, cell in enumerate(row):
             if cell == EMPTY:
                 possible_actions.add((i, j))
-    print(possible_actions)
     return possible_actions
 
 
 def result(board, action):
     (i, j) = action
 
-    if board[i][j] is not EMPTY:
+    if (i, j) not in actions(board):
         raise RuntimeError('This move is not valid.')
 
     new_board = copy.deepcopy(board)
@@ -64,7 +63,6 @@ def result(board, action):
 
 
 def winner(board):
-    print('in winner')
     # straight across top row
     if board[0][0] == board[0][1] and board[0][0] == board[0][2]:
         return board[0][0]
@@ -82,7 +80,7 @@ def winner(board):
         return board[0][0]
 
     # straight down center column
-    if board[0][1] == board[1][1] and board[0][1] == board[1][2]:
+    if board[0][1] == board[1][1] and board[0][1] == board[2][1]:
         return board[0][1]
 
     # straight down right column
@@ -101,6 +99,9 @@ def winner(board):
 
 
 def terminal(board):
+    if winner(board) == 'X' or winner(board) == 'O':
+        return True
+
     for row in board:
         for cell in row:
             if cell == EMPTY:
@@ -129,7 +130,7 @@ def minimax(board):
         value = -math.inf
         move = (-1, -1)
         for action in actions(board):
-            minv = MIN_VALUE(result(board, action))
+            minvalue = MIN_VALUE(result(board, action))
             if minvalue > value:
                 value = minvalue
                 move = action
@@ -141,7 +142,7 @@ def minimax(board):
         for action in actions(board):
             maxvalue = MAX_VALUE(result(board, action))
             if maxvalue < value:
-                value = maxv
+                value = maxvalue
                 move = action
         return move
 
